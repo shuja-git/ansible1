@@ -25,3 +25,18 @@
     name: mongod
     state: started
     enabled: yes
+
+- name: Download Mongodb schema files
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: download
+
+- name: Load catalogue Schema
+  community.mongodb.mongodb_shell:
+    file: "/tmp/mongodb-main/catalogue.js"
+    idempotent: yes
+
+- name: Load user Schema
+  community.mongodb.mongodb_shell:
+    file: "/tmp/mongodb-main/user.js"
+    idempotent: yes
