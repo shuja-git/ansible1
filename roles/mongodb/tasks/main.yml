@@ -1,0 +1,27 @@
+# curl -s -o /etc/yum.repos.d/mongodb.repo https://raw.githubusercontent.com/roboshop-devops-project/mongodb/main/mongo.repo
+
+- name: copy mongoDB repo
+  ansible.builtin.copy:
+    src: mongo.repo
+    dest: /etc/yum.repos.d/mongo.repo
+
+- name: Install mongodb
+  ansible.builtin.yum:
+    name: mongodb-org
+    state: installed
+
+#    Update Liste IP address from 127.0.0.1 to 0.0.0.0 in config file
+#  Config file: /etc/mongod.conf
+- name: update mongodb file to listen to 0.0.0.0
+  ansible.builtin.replace:
+    path: /etc/mongod.conf
+    regexp: '127.0.0.1'
+    replace: '0.0.0.0'
+
+
+#   Start mongodb Service.
+- name: start mongodb service
+  ansible.builtin.systemd:
+    name: mongod
+    state: started
+    enabled: yes
